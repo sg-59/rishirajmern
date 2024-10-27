@@ -8,6 +8,7 @@ const cors=require('cors')
 app.use(cors())
 
 const userRouterPage=require('./Router/userRouter')
+const authRouterPage=require('./Router/authRouter')
 
 mongoose.connect(process.env.MongoUrl).then(()=>{
     console.log("data base are connected");
@@ -19,6 +20,7 @@ mongoose.connect(process.env.MongoUrl).then(()=>{
 
 app.use(express.json())
 app.use('/rishiraj',userRouterPage)
+app.use('/api',authRouterPage)
 
 
 app.listen(9000,()=>{

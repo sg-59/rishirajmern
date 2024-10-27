@@ -1,26 +1,25 @@
 import {createBrowserRouter,RouterProvider} from 'react-router-dom'
-import Profile from "./Pages/Profile"
-import Signuppage from "./Pages/Signuppage"
-import Update from './Pages/Update'
-
-
-
+import Signup from './Pages/Signup'
+import Login from './Pages/Login'
+import { useSelector } from 'react-redux'
+import Home from './Pages/Home'
 
 function App() {
 
+  const logindata=useSelector((state)=>state.login.loginData)
+
+  console.log("logindata in app.jsx",logindata);
+  
+
   const router=createBrowserRouter([
-    {
-      path:"/",
-      element:<Signuppage/>
-    },
-    {
-      path:'/profile',
-      element:<Profile/>
-    },
-    {
-      path:'/update/:userid',
-      element:<Update/>
-    }
+{
+  path:"/",
+  element:logindata?.jwtToken? <Home/> : <Login/>
+},
+{
+  path:"/signup",
+  element:<Signup/>
+},
 
   ])
 

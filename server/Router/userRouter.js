@@ -1,23 +1,29 @@
 
 const router=require('express').Router()
 const user=require('../Model/productSchema')
+const crypto=require('crypto-js');
+const verifyjwtToken=require('../Verifytoken')
 
-router.post('/postData',(req,res)=>{
+
+router.post('/postData',async(req,res)=>{
     console.log(req.body);
+    req.body.password=crypto.AES.encrypt(req.body.password,process.env.secKey).toString()
     
     try{
 const newData=new user(req.body)
-newData.save()
-return res.send("data saved")
+const savedData=await newData.save()
+return res.status(200).json(savedData)
 }catch(err){
 return res.send(err.message)
 }
 })
 
 
-router.get('/getDatabaseData',async(req,res)=>{
+router.get('/getDatabaseData/:id',verifyjwtToken,async(req,res)=>{
+    console.log("second ...........",req.headers.token);
+    
    try{
-const databasedata=await user.find()
+const databasedata=await user.findById(req.params.id)
 res.send(databasedata)
     }catch(err){
 res.send(err)
