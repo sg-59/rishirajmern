@@ -3,6 +3,8 @@ import Signup from './Pages/Signup'
 import Login from './Pages/Login'
 import { useSelector } from 'react-redux'
 import Home from './Pages/Home'
+import Profile from './Pages/Profile'
+import Update from './Pages/Update'
 
 function App() {
 
@@ -20,7 +22,14 @@ function App() {
   path:"/signup",
   element:<Signup/>
 },
-
+{
+  path:'/profile',
+  element:logindata?.jwtToken? <Profile/> : <Login/>
+},
+{
+  path:"/update",
+  element:logindata?.jwtToken? <Update/> : <Login/>
+}
   ])
 
 

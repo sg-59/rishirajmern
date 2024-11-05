@@ -3,12 +3,16 @@ const user=require('../Model/productSchema')
 const crypto=require('crypto-js')
 const jwt=require('jsonwebtoken')
 router.post('/login',async(req,res)=>{
+    console.log("req.body",req.body);
+    
     try{
 const findUser=await user.findOne({email:req.body.email})
+console.log("find user",findUser);
+
 if(!findUser){
     return res.status(401).json("email is not found")
 }
-console.log(findUser);
+console.log("*******************",findUser);
 
 const hashedPassword=crypto.AES.decrypt(findUser.password,process.env.secKey)
 console.log("hashed password",hashedPassword);

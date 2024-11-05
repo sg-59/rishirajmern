@@ -19,8 +19,8 @@ return res.send(err.message)
 })
 
 
-router.get('/getDatabaseData/:id',verifyjwtToken,async(req,res)=>{
-    console.log("second ...........",req.headers.token);
+router.get('/getDatabaseData/:id',async(req,res)=>{
+
     
    try{
 const databasedata=await user.findById(req.params.id)
