@@ -12,6 +12,8 @@ if(err){
 }
 
 if(req.params.id==data.id){
+    console.log("success");
+    
     next()
 }else{
     return res.status(401).json("user and token does'nt match")

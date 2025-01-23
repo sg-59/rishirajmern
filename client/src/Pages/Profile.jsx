@@ -33,6 +33,7 @@ setState1(data)
 
   return (
     <div>
+    <img src={state?.image} alt="" />
       <h1>{state1}</h1>
       <h1>{state?.name}</h1>
       <h3>{state?.email}</h3>

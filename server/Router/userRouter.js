@@ -3,14 +3,39 @@ const router=require('express').Router()
 const user=require('../Model/productSchema')
 const crypto=require('crypto-js');
 const verifyjwtToken=require('../Verifytoken')
+const multer=require('multer')
+const cloudinary=require('cloudinary').v2
+require('dotenv').config()
 
+cloudinary.config({ 
+    cloud_name:process.env.Cloudname,
+    api_key:process.env.APIkey, 
+    api_secret:process.env.APIsecret // Click 'View API Keys' above to copy your API secret
+});
 
-router.post('/postData',async(req,res)=>{
-    console.log(req.body);
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+      cb(null, './Images')
+    },
+    filename: function (req, file, cb) {
+      cb(null, file.originalname)
+    }
+  })
+  
+  const upload = multer({ storage: storage })
+
+router.post('/postData',upload.single('image'),async(req,res)=>{
+    console.log("first",req.body);
+    console.log("second",req.file);
+
+    const filedata=await cloudinary.uploader.upload(req.file.path)
+    console.log("third",filedata);
+    const picture=filedata.secure_url
+
     req.body.password=crypto.AES.encrypt(req.body.password,process.env.secKey).toString()
     
     try{
-const newData=new user(req.body)
+const newData=new user({image:picture,...req.body})
 const savedData=await newData.save()
 return res.status(200).json(savedData)
 }catch(err){
@@ -19,7 +44,8 @@ return res.send(err.message)
 })
 
 
-router.get('/getDatabaseData/:id',async(req,res)=>{
+router.get('/getDatabaseData/:id',verifyjwtToken,async(req,res)=>{
+console.log("token in backend...............",req.headers.token);
 
     
    try{
@@ -53,7 +79,7 @@ res.send(err)
     }
 })
 
-router.delete('/deleteDetails/:id',async(req,res)=>{
+router.delete('/deleteDetails/:id',verifyjwtToken,async(req,res)=>{
     try{
         await user.findByIdAndDelete(req.params.id)
 res.status(200).json("deleted successfull")
@@ -62,7 +88,7 @@ res.status(200).json("deleted successfull")
     }
 })
 
-router.put('/updateData/:id',async(req,res)=>{
+router.put('/updateData/:id',verifyjwtToken,async(req,res)=>{
     console.log(req.params.id);
     
     try{
